@@ -26,7 +26,7 @@
         <button @click="onSubmit">onSubmit</button>-->
 
         <div class="uk-margin">
-          <input ref="file" type="file"  @change="addGraviola">
+          <input ref="file" type="file"  @change="uploadPhoto">
         </div>
         <div class="uk-margin">
           <button  @click="addGraviola"> test</button>
@@ -99,16 +99,17 @@ const files = []
 
 const product = ref({
   id: "",
-  name: "",
+  name: "test2",
   price: 0,
   image: "",
 });
 
-/*  const  { mutate : uploadPhoto } = useMutation(addImage, () => ({
+  const  { mutate : uploadPhoto } = useMutation(addImage, () => ({
     variables: {
       file: {
-        filename: filename,
+        filename:  product.value.name,
         encoding: product.value.price,
+        mimetype: product.value.image,
       }
 
     },
@@ -117,7 +118,7 @@ const product = ref({
       {query: uploads}
 
     ]
-  }))*/
+  }))
 
 console.log(file)
 console.log(product.value.name)

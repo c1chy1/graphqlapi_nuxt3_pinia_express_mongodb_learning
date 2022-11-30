@@ -22,11 +22,9 @@ const resolvers = {
 
         uploads: (parent, args) => {
             console.log("flag");
-            return [{
-                filename: "myfile.jpg",
-                mimetype: "image/jpge",
-                encoding: "."
-            }];
+
+            console.log(parent)
+            console.log(args)
         }},
         Mutation: {
 
