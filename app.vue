@@ -125,17 +125,22 @@ const product = ref({
 const handleImage = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   const file = (target.files as FileList)[0];
+
+
   try {
     console.log(file);
     handleAvatar({
-      file: file
+      file: {
+
+        filename: file.name
+
+      }
     });
   } catch (error) {
     console.log(error);
   }
-
-
   return { photo_url, file_name, handleImage };
+
 }
 
 /*withDefaults(defineProps<{
@@ -162,11 +167,11 @@ file = event.target.files[0];
 
 let banner = ref()
 
-  const  { mutate : Mut } = useMutation(addImage, () => ({
+/*  const  { mutate : Mut } = useMutation(addImage, () => ({
 
 
     variables: {
-      file: button
+      file
 
     },
     refetchQueries: [
@@ -174,7 +179,7 @@ let banner = ref()
       {query: uploads}
 
     ]
-  }))
+  }))*/
 
 console.log(product.value.name)
 
@@ -184,7 +189,7 @@ const previewBanner = (event: any) => {
    useClient().mutate({
     mutation: addImage,
     variables: {
-     file : event.target.collection[0]
+     file : event.target.files[0]
     },
   })
 

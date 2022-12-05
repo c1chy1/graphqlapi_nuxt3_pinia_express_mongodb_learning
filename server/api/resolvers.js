@@ -1,14 +1,4 @@
 
-const path = require('path')
-const api = require('./api');
-const  { GraphQLUpload }  = require("apollo-upload-server");
-const { shortid } = require("shortid");
-/*var fs = require('fs');*/
-const __dirname = path.resolve();
-
-const { mkdirp } = require("mkdirp");
-const stream = require('stream');
-const { ApolloError } = require('apollo-server-express');
 
 
 
@@ -17,38 +7,42 @@ const { ApolloError } = require('apollo-server-express');
 const UPLOAD_DIR = './uploads'
 const uploads = []
 
-const resolvers = {
+export const resolvers = {
 
-    Upload:  GraphQLUpload,
+
 
 
     Query: {
         /*  images: () => api.images,*/
 
-        uploads: () => uploads
-
-
-    },
+        uploads: () => uploads},
         Mutation: {
 
-            singleUpload: async (parent, { file }, context ,args) => {
+            singleUpload: async (parent, { file }, context) => {
+
+                const { filename , photoURL } = await file;
 
 
-                console.log(file , "file")
-                console.log(file.filename , "filename" )
+
                 //
 
-                await file
+               file = uploads.length+1;
 
                uploads.push({
-                   file
+                   file,
+                   filename,
+                   photoURL
                 });
-
+                const name = Date.now()+'_'+filename;
                 console.log(uploads)
+                console.log(file , "file")
 
                 return {
-                    file
+                    filename,
+                    photoURL: `http://localhost:4000/images/${name}`,
+
                 }
+
             },
 
 
@@ -96,4 +90,3 @@ const resolvers = {
         */
 
 }}
-module.exports = resolvers

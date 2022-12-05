@@ -3,7 +3,7 @@ import express from 'express'
 import {ApolloServer } from "apollo-server-express";
 import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
 import typeDefs from './typeDefs'
-import resolvers  from "./resolvers";
+import {resolvers}  from "./resolvers";
 import cors from 'cors'
 
 const app = express();

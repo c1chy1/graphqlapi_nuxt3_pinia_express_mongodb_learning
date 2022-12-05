@@ -15,8 +15,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 	const apolloClient = new ApolloClient({
 
 		cache: new InMemoryCache(),
-		uri: 'http://localhost:4000/graphql',
-		link: createUploadLink()
+		link: createUploadLink({
+			uri: "http://localhost:4000/graphql",
+		}),
+
 	})
 
 

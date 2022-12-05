@@ -9,7 +9,7 @@ const typeDefs = gql`
     type File {
 
         filename: String
-
+        photoURL : String
     }
 
 
