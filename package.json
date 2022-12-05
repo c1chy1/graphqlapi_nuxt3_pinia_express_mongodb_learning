@@ -29,6 +29,8 @@
     "graphql-upload": "^16.0.2",
     "mongoose": "^6.7.2",
     "pinia": "^2.0.23",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "apollo-upload-client" : "^17.0.0",
+    "apollo-upload-server" : "^7.1.0"
   }
 }

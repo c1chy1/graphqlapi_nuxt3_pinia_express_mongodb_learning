@@ -5,8 +5,6 @@ export const uploads = gql`
     query {
         
         uploads {
-            mimetype
-            encoding
             filename
         }
     }

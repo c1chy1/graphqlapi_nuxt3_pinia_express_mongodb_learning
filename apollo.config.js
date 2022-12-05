@@ -2,6 +2,8 @@
 import { defineNuxtPlugin } from "#app"
 import { ApolloClient, InMemoryCache ,	createHttpLink} from "@apollo/client/core"
 import { DefaultApolloClient } from "@vue/apollo-composable"
+import { createUploadLink } from "apollo-upload-client"
+
 
 export default defineNuxtPlugin((nuxtApp) => {
 
@@ -12,9 +14,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 	const apolloClient = new ApolloClient({
 
-
 		cache: new InMemoryCache(),
-		uri: 'http://localhost:4000/graphql'
+		uri: 'http://localhost:4000/graphql',
+		link: createUploadLink()
 	})
 
 

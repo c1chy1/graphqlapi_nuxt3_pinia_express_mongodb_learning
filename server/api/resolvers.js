@@ -3,11 +3,16 @@ const path = require('path')
 const api = require('./api');
 const  { GraphQLUpload }  = require("apollo-upload-server");
 const { shortid } = require("shortid");
-const { fs } = require("fs");
+/*var fs = require('fs');*/
+const __dirname = path.resolve();
+
 const { mkdirp } = require("mkdirp");
 const stream = require('stream');
+const { ApolloError } = require('apollo-server-express');
 
-const { createWriteStream, unlinkSync } = require('fs')
+
+
+/*const { createWriteStream, unlinkSync , createReadStream } = require('fs')*/
 
 const UPLOAD_DIR = './uploads'
 const uploads = []
@@ -20,49 +25,32 @@ const resolvers = {
     Query: {
         /*  images: () => api.images,*/
 
-        uploads: (parent, args) => {
-            console.log("flag");
+        uploads: () => uploads
 
-            console.log(parent)
-            console.log(args)
-        }},
+
+    },
         Mutation: {
 
-
-            singleUpload: async (parent, {file}) => {
-
-                try {
-                    const {filename, encoding, mimetype} = await file;
-
-                    // const { ext } = path.parse(filename)
-                    // const randomName = generateRandomString(12) + ext
+            singleUpload: async (parent, { file }, context ,args) => {
 
 
-                    console.log(filename, encoding, mimetype)
+                console.log(file , "file")
+                console.log(file.filename , "filename" )
+                //
 
-                    console.log(file)
-                    return {filename, encoding, mimetype}
+                await file
 
+               uploads.push({
+                   file
+                });
 
-                    //   const { createReadStream, filename, mimetype, encoding } = await file;
+                console.log(uploads)
 
-                    //   // Invoking the `createReadStream` will return a Readable Stream.
-                    //   // See https://nodejs.org/api/stream.html#stream_readable_streams
-                    //   const stream = createReadStream();
-                    //   const pathName = path.join(__dirname, `public/images/${randomName}`)
-
-
-                    //   const out = fs.createWriteStream(pathName)
-                    //   stream.pipe(out)
-                    //   await finished(out)
-
-                    //   return { filename, mimetype, encoding }
-
-                } catch (err) {
-                    throw Error(err)
+                return {
+                    file
                 }
-            }
-        },   }
+            },
+
 
         /*        addImage: async (parent, { file } , args) => {
                     const { createReadStream, filename, mimetype, encoding } = await file
@@ -107,5 +95,5 @@ const resolvers = {
 
         */
 
-
+}}
 module.exports = resolvers

@@ -4,29 +4,30 @@
 
       <div v-for="item in collection"  >
 
-      <h1>{{item.filename}}</h1>
         <img class="w-16" :src="item.url">
 
+        <h1>{{item}}</h1>
       </div>
-
-      <div class="flex flex-col py-8">
-      <input v-model="text" placeholder="name">
-      <input v-model="url" placeholder="url">
-      <button @click="Mut">
+      <button @click="Mut" ref="button">
         Send message
       </button>
+<!--      <div class="flex flex-col py-8">
+        <div>
+      <input v-model="text" placeholder="name">
+      <input v-model="url" placeholder="url">
 
-<!--      <form action="/action_page.php">
+
+&lt;!&ndash;      <form action="/action_page.php">
 
         <p>{{data}}</p>
         <input type="submit">
 
       </form>
 
-        <button @click="onSubmit">onSubmit</button>-->
+        <button @click="onSubmit">onSubmit</button>&ndash;&gt;
 
         <div class="uk-margin">
-          <input ref="file" type="file"  @change="uploadPhoto">
+          <input ref="file" type="file"  @change="uploadPhoto" multiple>
         </div>
         <div class="uk-margin">
           <button  @click="addGraviola"> test</button>
@@ -40,15 +41,30 @@
 
 
 
+      </div>-->
+
+
+      <div class="form--container ">
+        <div class="form--item flex flex-col">
+          <label class="form--label" for="file">Select File: </label>
+          <input class="form--input" type="file" name="file" id="file" @change="handleImage"  required />
+        </div>
+        <div v-if="file_name" class="form--item">
+          <img :alt="file_name" :src="file_name">
+
+
+        </div>
+      </div>
+      <input v-model="file_name" placeholder="name">
     </div>
 </template>
 
 
 
 <script lang="ts" setup>
-import {useQuery , useMutation} from "@vue/apollo-composable";
+import {useQuery , useMutation , useResult} from "@vue/apollo-composable";
 import {Uploads} from "~/store/image";
-import {ref} from 'vue'
+import {ref,Events} from 'vue'
 import {images} from "~/apollo/queries/images";
 import {uploads} from "~/apollo/queries/upload";
 import {imageCreate} from "~/apollo/mutations/imageCreate";
@@ -56,9 +72,11 @@ import {addImage} from "~/apollo/mutations/addImage";
 import './assets/tailwind.css'
 import  gql from 'graphql-tag'
 import  {useClient}  from '~/plugins/apollo-client'
+import {a} from "vite-node/types-ab8db104";
+import {filename} from "pathe/utils";
 
 
-console.log(Uploads().filename)
+
 
 
 
@@ -68,6 +86,8 @@ const { result, error } = useQuery(uploads, {
 
 const collection = computed(() => result.value?.uploads?? [])
 
+
+console.log(result)
 function addGraviola() {
 
 
@@ -75,13 +95,48 @@ function addGraviola() {
 
 }
 
-const url = ref([''])
+
+const url = ref()
 
 const text = ref([''])
+let photo_url = ref('');
+let file_name = ref('');
 
-const file = ref()
+let button = ref('');
+
 
 const files = []
+const { mutate: handleAvatar, onDone } = useMutation(addImage)
+
+onDone(result => {
+  console.log(result.data.singleUpload)
+  let { photoURL, filename } = result.data.singleUpload;
+  photo_url.value = photoURL;
+  file_name.value = filename;
+})
+
+const product = ref({
+  id: "",
+  name: "test2",
+  price: 0,
+  image: "url",
+});
+
+const handleImage = async (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = (target.files as FileList)[0];
+  try {
+    console.log(file);
+    handleAvatar({
+      file: file
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
+
+  return { photo_url, file_name, handleImage };
+}
 
 /*withDefaults(defineProps<{
   size?: number
@@ -95,22 +150,23 @@ const files = []
 })*/
 
 
+/*function previewBanner(event: { target: { files: any[]; }; }) {
+file = event.target.files[0];
+
+  console.log(file)
+}*/
 
 
-const product = ref({
-  id: "",
-  name: "test2",
-  price: 0,
-  image: "",
-});
 
-  const  { mutate : uploadPhoto } = useMutation(addImage, () => ({
+
+
+let banner = ref()
+
+  const  { mutate : Mut } = useMutation(addImage, () => ({
+
+
     variables: {
-      file: {
-        filename:  product.value.name,
-        encoding: product.value.price,
-        mimetype: product.value.image,
-      }
+      file: button
 
     },
     refetchQueries: [
@@ -120,27 +176,20 @@ const product = ref({
     ]
   }))
 
-console.log(file)
 console.log(product.value.name)
 
 
+const previewBanner = (event: any) => {
+
+   useClient().mutate({
+    mutation: addImage,
+    variables: {
+     file : event.target.collection[0]
+    },
+  })
 
 
-const { mutate : Mut } = useMutation(addImage, () => ({
-  variables: {
-    file: {
-      filename: url.value,
-      encoding: text.value,
-    }
-
-  },
-
-  refetchQueries: [
-
-    {query: uploads}
-
-  ]
-}))
+}
 
 console.log(collection)
 
