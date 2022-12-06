@@ -8,8 +8,8 @@ const typeDefs = gql`
 
     type File {
 
-        filename: String
-        photoURL : String
+        filename: String!
+        photoURL : String!
     }
 
 
