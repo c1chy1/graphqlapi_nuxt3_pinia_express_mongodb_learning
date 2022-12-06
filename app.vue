@@ -1,8 +1,8 @@
 <template>
 
-    <div class="container mx-auto grid grid-cols-5 w-full">
+    <div class="container mx-auto grid grid-cols-1 grid-rows-1 w-full">
 
-      <div v-for="item in collection"  >
+      <div v-for="item in collection"   >
 
         <img class="w-16" :src="item.url">
 
@@ -50,13 +50,14 @@
           <input class="form--input" type="file" name="file" id="file" @change="handleImage"  required />
         </div>
         <div v-if="file_name" class="form--item">
-          <img :alt="file_name" :src="file_name">
-
-
+          <img :alt="file_name" :src="photo_url">
         </div>
       </div>
       <input v-model="file_name" placeholder="name">
     </div>
+
+
+  <img :alt="file_name" src="./assets/Flag_of_Germany.svg">
 </template>
 
 
@@ -106,7 +107,14 @@ let button = ref('');
 
 
 const files = []
-const { mutate: handleAvatar, onDone } = useMutation(addImage)
+const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
+
+  refetchQueries: [
+
+    {query: uploads}
+
+  ]
+}))
 
 onDone(result => {
   console.log(result.data.singleUpload)
@@ -132,10 +140,12 @@ const handleImage = async (event: Event) => {
     handleAvatar({
       file: {
 
-        filename: file.name
+        filename: file.name,
+        photoURL:`_nuxt/assets/${file.name}`
 
-      }
-    });
+      },
+    },
+    );
   } catch (error) {
     console.log(error);
   }

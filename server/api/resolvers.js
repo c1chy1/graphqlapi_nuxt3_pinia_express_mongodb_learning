@@ -38,7 +38,7 @@ export const resolvers = {
 
                 return {
                     filename,
-                    photoURL: `http://localhost:4000/images/${name}`,
+                    photoURL: `_nuxt/assets/${filename}`,
 
                 }
 
