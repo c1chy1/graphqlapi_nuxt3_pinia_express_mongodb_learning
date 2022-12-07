@@ -4,9 +4,9 @@
 
       <div v-for="item in collection"   >
 
-        <img class="w-16" :src="item.url">
+        <img class="w-16" :src="item.photoURL">
 
-        <h1>{{item}}</h1>
+        <h1>{{item.filename}}</h1>
       </div>
       <button @click="Mut" ref="button">
         Send message
@@ -50,14 +50,14 @@
           <input class="form--input" type="file" name="file" id="file" @change="handleImage"  required />
         </div>
         <div v-if="file_name" class="form--item">
-          <img :alt="file_name" :src="photo_url">
+          <img :alt="file_name" :src="photo_url" class="w-16">
         </div>
       </div>
       <input v-model="file_name" placeholder="name">
     </div>
 
 
-  <img :alt="file_name" src="./assets/Flag_of_Germany.svg">
+<!--  <img :alt="file_name" src="./assets/Flag_of_Germany.svg">-->
 </template>
 
 
@@ -88,7 +88,7 @@ const { result, error } = useQuery(uploads, {
 const collection = computed(() => result.value?.uploads?? [])
 
 
-console.log(result)
+console.log(collection)
 function addGraviola() {
 
 
