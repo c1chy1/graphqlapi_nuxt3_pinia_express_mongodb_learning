@@ -7,6 +7,8 @@ export const addImage = gql`
         singleUpload(file:$file) {
             filename
             photoURL
+            id
+            path
     }
     }
 `

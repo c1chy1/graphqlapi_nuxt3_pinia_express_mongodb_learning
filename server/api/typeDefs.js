@@ -7,9 +7,10 @@ const typeDefs = gql`
     scalar Upload
 
     type File {
-
-        filename: String!
-        photoURL : String!
+        id: ID
+        filename: String
+        photoURL : String
+        path: String
     }
 
 

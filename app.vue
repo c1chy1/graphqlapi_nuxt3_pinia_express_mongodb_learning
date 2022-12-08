@@ -7,10 +7,13 @@
         <img class="w-16" :src="item.photoURL">
 
         <h1>{{item.filename}}</h1>
+        <h1>{{item.path}}</h1>
+        <h1>{{item.id}}</h1>
       </div>
       <button @click="Mut" ref="button">
         Send message
       </button>
+
 <!--      <div class="flex flex-col py-8">
         <div>
       <input v-model="text" placeholder="name">
@@ -102,8 +105,8 @@ const url = ref()
 const text = ref([''])
 let photo_url = ref('');
 let file_name = ref('');
-
-let button = ref('');
+let file_path = ref('');
+let file_id = ref('');
 
 
 const files = []
@@ -118,9 +121,13 @@ const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
 
 onDone(result => {
   console.log(result.data.singleUpload)
-  let { photoURL, filename } = result.data.singleUpload;
+  let { photoURL, filename , id ,path} = result.data.singleUpload;
   photo_url.value = photoURL;
   file_name.value = filename;
+  file_id.value = id;
+  file_path.value = path;
+
+  console.log(photoURL)
 })
 
 const product = ref({
@@ -141,15 +148,14 @@ const handleImage = async (event: Event) => {
       file: {
 
         filename: file.name,
-        photoURL:`_nuxt/assets/${file.name}`
-
-      },
+        photoURL: file.name
+      }
     },
     );
   } catch (error) {
     console.log(error);
   }
-  return { photo_url, file_name, handleImage };
+  return { file_id, file_path, photo_url, file_name, handleImage };
 
 }
 
