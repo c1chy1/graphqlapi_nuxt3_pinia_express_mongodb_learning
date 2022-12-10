@@ -23,7 +23,7 @@ const typeDefs = gql`
 
     type Mutation {
 
-        singleUpload(file: Upload!): File!
+        singleUpload(file: Upload): File
 
     }
 `;

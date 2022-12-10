@@ -14,11 +14,44 @@ import  {createWriteStream }from 'fs'
 import {createReadStream} from "fs"
 
 
-const UPLOAD_DIR = './uploads'
+const UPLOAD_DIR = 'uploads'
 const uploads = []
-mkdirp.sync(UPLOAD_DIR)
+/*mkdirp.sync(UPLOAD_DIR)*/
 
 /*const LOCAL_DIR = path.resolve('');*/
+
+const storeFS = ({ stream, filename }) => {
+    // Check if UPLOAD_DIR exists, create one if not
+    if (!fs.existsSync(UPLOAD_DIR)) {
+        mkdirp(UPLOAD_DIR, err => {
+            if (err) throw new Error(err);
+        });
+    }
+
+    const id = shortId.generate();
+    const path = `${UPLOAD_DIR}/${id}-${filename}`;
+    return new Promise((resolve, reject) =>
+        stream
+            .on('error', error => {
+                if (stream.truncated) {
+                    // Delete the truncated file
+                    fs.unlinkSync(path);
+                }
+                reject(error);
+            })
+            .pipe(fs.createWriteStream(path))
+            .on('error', error => reject(error))
+            .on('finish', () => resolve({ id, path }))
+    );
+};
+
+const processUpload = async uploadPromise => {
+    const { stream, filename} = await uploadPromise;
+    const { path} = await storeFS({ stream, filename });
+    return { name: filename, type:  path,  };
+};
+
+
 export const resolvers = {
 
 
@@ -35,15 +68,13 @@ export const resolvers = {
 
 
 
-                const { filename , id,   photoURL  } = await file;
+                const {   stream,filename , id,   photoURL  } = await file;
 
 
+                return {
+                    stream, filename,id,photoURL
 
-
-
-
-
-
+                }
 
 
            /*     const writeStream = fs.createWriteStream(UPLOAD_DIR)
@@ -61,38 +92,27 @@ export const resolvers = {
                 });*/
        /*         const storedFileName = `${shortId.generate()}-${filename}`;*/
 
-                const data = fs.createReadStream(path.join("../uploads", filename));
-
-                const storedFileUrl = path.join("uploads", filename)
 
 
-              fs.createWriteStream(storedFileUrl)
 
-                console.log(storedFileUrl)
-                console.log(data)
-                file = uploads.length+1;
+/*                const data = fs.createReadStream(path.join("../uploads", filename));
+
+                const storedFileUrl = path.join("../uploads", filename)*/
+      /*          const read = fs.createReadStream(filename);
+
+       const test =    fs.createWriteStream(path)
+
+           const test2 = read.pipe(test)*/
+
+
+         /*       file = uploads.length+1;
 
                 uploads.push({
                     file,
                     filename,
                     photoURL,
                     id
-                });
-
-
-                return {
-                    filename,
-                    photoURL,
-                    id,
-                    file,
-
-
-                }
-
-
-
-
-
+                });*/
 
 
 

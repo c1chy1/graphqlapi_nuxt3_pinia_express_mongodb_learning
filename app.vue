@@ -66,6 +66,7 @@
 
 
 <script lang="ts" setup>
+
 import {useQuery , useMutation , useResult} from "@vue/apollo-composable";
 import {Uploads} from "~/store/image";
 import {ref,Events} from 'vue'
@@ -76,11 +77,12 @@ import {addImage} from "~/apollo/mutations/addImage";
 import './assets/tailwind.css'
 import  gql from 'graphql-tag'
 import  {useClient}  from '~/plugins/apollo-client'
-import {a} from "vite-node/types-ab8db104";
-import {filename} from "pathe/utils";
 
 
+import {MongoClient} from "mongodb";
 
+
+const client = new MongoClient(process.env.MONGODB_URI || "mongodb://localhost" )
 
 
 
@@ -102,14 +104,13 @@ function addGraviola() {
 
 const url = ref()
 
-const text = ref([''])
+const files = ref([])
 let photo_url = ref('');
-let file_name = ref('');
+let file_name = ref<string>('');
 let file_path = ref('');
 let file_id = ref('');
 
 
-const files = []
 const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
 
   refetchQueries: [
@@ -121,13 +122,10 @@ const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
 
 onDone(result => {
   console.log(result.data.singleUpload)
-  let { photoURL, filename , id ,path} = result.data.singleUpload;
-  photo_url.value = photoURL;
-  file_name.value = filename;
-  file_id.value = id;
-  file_path.value = path;
+  let {  filename  } = result.data.singleUpload;
 
-  console.log(photoURL)
+  console.log(filename)
+
 })
 
 const product = ref({
@@ -135,6 +133,7 @@ const product = ref({
   name: "test2",
   price: 0,
   image: "url",
+  files: []
 });
 
 const handleImage = async (event: Event) => {
@@ -144,18 +143,18 @@ const handleImage = async (event: Event) => {
 
   try {
     console.log(file);
+    console.log(files);
     handleAvatar({
-      file: {
+      file :  {
 
-        filename: file.name,
-        photoURL: file.name
+        filename : file_name
       }
     },
     );
   } catch (error) {
     console.log(error);
   }
-  return { file_id, file_path, photo_url, file_name, handleImage };
+  return {  handleImage };
 
 }
 
@@ -201,13 +200,13 @@ console.log(product.value.name)
 
 
 const previewBanner = (event: any) => {
-
+  const target = event.target as HTMLInputElement;
+  const file = (target.files as FileList)[0];
    useClient().mutate({
     mutation: addImage,
-    variables: {
-     file : event.target.files[0]
-    },
-  })
+    variables:   {
+      file: file
+    }})
 
 
 }

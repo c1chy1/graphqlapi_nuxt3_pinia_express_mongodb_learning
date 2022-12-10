@@ -33,6 +33,7 @@
     "shortid": "^2.2.16",
     "apollo-upload-client" : "^17.0.0",
     "apollo-upload-server" : "^7.1.0",
-    "sharp" : "^0.31.2"
+    "sharp" : "^0.31.2",
+    "mongodb": "^4.12.1"
   }
 }

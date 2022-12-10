@@ -6,9 +6,8 @@ export const uploads = gql`
         
         uploads {
             filename
-            photoURL
-            path
-            id
+         
+       
         }
     }
 

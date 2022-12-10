@@ -1,15 +1,15 @@
 
 import express from 'express'
 import {ApolloServer } from "apollo-server-express";
-import graphqlUploadExpress from "graphql-upload/graphqlUploadExpress.mjs";
+import { apolloUploadExpress } from 'apollo-upload-server';
 import typeDefs from './typeDefs'
 import {resolvers}  from "./resolvers";
 import cors from 'cors'
 
 const app = express();
 app.use(cors())
-app.use(graphqlUploadExpress({ uploadDir: './uploads' }))
-app.use('/static', express.static('static'));
+app.use(apolloUploadExpress({ uploadDir: './uploads' }));
+app.use('/uploads', express.static('uploads'));
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -23,9 +23,8 @@ const server = new ApolloServer({ typeDefs, resolvers});
 server.start().then((res) => {
     server.applyMiddleware({
         app,
-        path: '/graphql',
         cors: true,
-        uploads: true,
+        uploads: false
 
     });
 });
