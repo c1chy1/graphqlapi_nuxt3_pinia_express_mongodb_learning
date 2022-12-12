@@ -128,10 +128,10 @@ const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
 }))
 
 onDone(result => {
-  console.log(result.data.singleUpload)
-  let {  filename  } = result.data.singleUpload;
+  console.log(result.data.addPost)
+  let {  data , file  } = result.data.addPost;
 
-  console.log(filename)
+  return {data, file}
 
 })
 
@@ -152,10 +152,8 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-      file :  {
-
-        filename : file_name
-      }
+      file :  file,
+      data : product.value.name
     },
     );
   } catch (error) {

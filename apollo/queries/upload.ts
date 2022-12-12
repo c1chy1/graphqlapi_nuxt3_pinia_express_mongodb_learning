@@ -4,11 +4,9 @@ export const uploads = gql`
 
     query {
         
-        uploads {
-            filename
-         
-       
-        }
+   posts {
+       id
+   }
     }
 
 `;
