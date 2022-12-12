@@ -79,6 +79,13 @@ import  gql from 'graphql-tag'
 import  {useClient}  from '~/plugins/apollo-client'
 
 
+import mongoose from "mongoose"
+
+
+console.log(mongoose)
+
+
+
 /*import {MongoClient} from "mongodb";
 
 

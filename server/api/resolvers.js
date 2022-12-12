@@ -1,5 +1,8 @@
 
 import shortId from "shortid"
+import { Posts } from "../api/models/index";
+
+import { ApolloError } from "apollo-server-express";
 import fs  from 'fs'
 import mkdirp from 'mkdirp'
 import sharp from 'sharp'
@@ -12,6 +15,7 @@ import  {createWriteStream }from 'fs'
 /*const { createWriteStream, unlinkSync , createReadStream } = require('fs')*/
 
 import {createReadStream} from "fs"
+
 
 
 const UPLOAD_DIR = 'uploads'
@@ -57,13 +61,50 @@ export const resolvers = {
 
     Upload: GraphQLUpload,
 
-    Query: {
-        /*  images: () => api.images,*/
+        Query: {
+            post: async (parent, args, ctx) => {
+                var singlepost = await Posts.findById(args.id).populate("author").exec();
+                singlepost.likecount = singlepost.likes.length ? singlepost.likes.length : 0;
+                return singlepost;
+            },
 
-        uploads: () => uploads},
+            posts: async (parent, args, ctx) => {
+                const posts = await Posts.find().populate("author").exec();
+                return posts.map((post) => {
+                    post.likecount = post.likes.length;
+                    return post;
+                });
+            },
+        },
         Mutation: {
+            addPost: async (parent, { data, file }, ctx) => {
+                try {
+                    const { createReadStream, filename, mimetype } = await file;
+                    const newFilename = Date.now();
+                    const filepath = `upload/${newFilename}.${path.extname(filename)}`;
 
-            singleUpload: async (parent, { file }) => {
+                    await new Promise((resolve, reject) => {
+                        createReadStream()
+                            .pipe(fs.createWriteStream(filepath))
+                            .on("finish", async () => {
+                                await Posts.create({
+                                    ...data,
+                                    author: ctx.user.sub,
+                                    photo: `http://localhost:8000/${filepath}`,
+                                });
+                                return resolve("ho rha hai");
+                            })
+                            .on("error", (err) => {
+                                console.log(err);
+                                return reject(err);
+                            });
+                    });
+                    return "Post has beeen created";
+                } catch (error) {
+                    return new ApolloError(error);
+                }
+            },
+         /*   singleUpload: async (parent, { file }) => {
 
 
 
@@ -74,7 +115,7 @@ export const resolvers = {
                 return {
                     stream, filename,id,photoURL
 
-                }
+                }*/
 
 
            /*     const writeStream = fs.createWriteStream(UPLOAD_DIR)
@@ -217,6 +258,6 @@ export const resolvers = {
 }
     }
 
-}
+
 
 
