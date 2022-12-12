@@ -79,10 +79,10 @@ import  gql from 'graphql-tag'
 import  {useClient}  from '~/plugins/apollo-client'
 
 
-import {MongoClient} from "mongodb";
+/*import {MongoClient} from "mongodb";
 
 
-const client = new MongoClient(process.env.MONGODB_URI || "mongodb://localhost" )
+const client = new MongoClient(process.env.MONGODB_URI || "mongodb://localhost" )*/
 
 
 

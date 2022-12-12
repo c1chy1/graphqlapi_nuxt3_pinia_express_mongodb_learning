@@ -7,7 +7,7 @@ export const startConnection = async () => {
     try {
         console.log();
         //recuerda configurar la base de datos en .env
-        const db = await mongoose.connect(`mongodb://localhost:27017/`);
+        const db = await mongoose.connect(`mongodb+srv://test:${process.env.PASS}@cluster0.b2vl73t.mongodb.net/?authMechanism=DEFAULT`);
         if(db) {
             console.log('MongoDB is connected');
         }
