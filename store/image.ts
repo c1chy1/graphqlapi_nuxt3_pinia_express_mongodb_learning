@@ -50,7 +50,6 @@ export const Uploads = defineStore('image', {
                 mutation: addImage,
 
             })
-            console.log(data)
         },
 
 

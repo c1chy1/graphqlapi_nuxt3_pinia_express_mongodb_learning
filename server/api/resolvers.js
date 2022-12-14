@@ -1,11 +1,18 @@
 
 
 import {Character} from "~/server/api/models/Character.model";
+import {Photo} from "~/server/api/models/Photo.model";
 
-
+const photos = []
 
 export const resolvers = {
     Query: {
+
+        allPhotos: () => Photo.find({}, (error, photos) => {
+            if (error) console.log('error', error)
+            return photos
+        }),
+
         characters: () => Character.find({}, (error, characters) => {
             if (error) console.log('error', error)
             return characters
@@ -16,15 +23,41 @@ export const resolvers = {
         })
     },
     Mutation: {
+
+
+        async uploadPhoto (parent, { photo }) {
+            const { filename, createReadStream } = await photo
+
+
+                const newPhoto = { filename }
+
+                photos.push(newPhoto)
+
+
+                console.log(photos)
+
+                return Photo.create(newPhoto)
+
+        },
+
+
+
         addCharacter(_, payload) {
 
-            const {value} = payload
 
-            console.log(value)
 
-            return Character.create(value)
+            return Character.create(payload)
         },
-    }
-}
+
+
+ /*       addFile: async (parent, { data, file }, ctx) => {
+
+
+                const {createReadStream, filename, mimetype} = await file;
+
+
+
+
+        }*/}}
 
 

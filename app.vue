@@ -129,9 +129,10 @@ import  {useClient}  from '~/plugins/apollo-client'
 
 import mongoose from "mongoose"
 import {addCharacter} from "~/apollo/mutations/addCharacter";
+import {uploadPhoto} from "~/apollo/mutations/uploadPhoto";
+import {allPhotos} from "~/apollo/queries/allPhotos";
 
 
-console.log(mongoose)
 
 
 
@@ -165,10 +166,11 @@ function addGraviola() {
 
 }
 
-const name = ref('');
+const name = ref<string>('');
+const image = ref<string>('');
 const status = ref<string>('');
 const gender = ref('');
-const image = ref('');
+
 
 
 
@@ -182,14 +184,18 @@ let file_path = ref('');
 let file_id = ref('');
 
 
-const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
+
+
+
+const { mutate: handleAvatar, onDone } = useMutation(uploadPhoto, () => ({
 
   refetchQueries: [
 
-    {query: uploads}
+    {query: allPhotos}
 
   ]
 }))
+
 
 onDone(result => {
   console.log(result)
@@ -201,9 +207,11 @@ const product = ref({
   id: "",
   name: "",
   price: 0,
-  image: "url",
+  image: "",
   files: []
 });
+
+
 
 const handleImage = async (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -214,11 +222,12 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-    book : {
-      id: 5,
-      title : product.value.name
+ photo: {
 
-    }
+   filename : file.name,
+   path: file.size
+
+ }
     },
     );
   } catch (error) {
@@ -254,7 +263,7 @@ file = event.target.files[0];
     variables: {
       name : name.value,
       status : status.value,
-      gender : gender.value,
+      gender :gender.value,
       image : image.value
 
     },
