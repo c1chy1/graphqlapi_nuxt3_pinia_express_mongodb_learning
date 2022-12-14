@@ -2,11 +2,16 @@ import { gql } from "graphql-tag";
 
 export const uploads = gql`
 
-    query {
+    query  {
         
-   posts {
-       id
-   }
+characters {
+    id
+    image
+    gender
+    name
+}
+        
+     
     }
 
 `;

@@ -8,6 +8,10 @@ export const startConnection = async () => {
         console.log();
         //recuerda configurar la base de datos en .env
         const db = await mongoose.connect(`mongodb+srv://test:${process.env.PASS}@cluster0.b2vl73t.mongodb.net/?authMechanism=DEFAULT`);
+        mongoose.plugin((schema: any) => { schema.options.usePushEach = true; });
+
+
+
         if(db) {
             console.log('MongoDB is connected');
         }

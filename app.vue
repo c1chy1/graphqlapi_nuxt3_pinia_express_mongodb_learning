@@ -4,13 +4,13 @@
 
       <div v-for="item in collection"   >
 
-        <img class="w-16" :src="item.photoURL">
+        <img class="w-16" :src="item">
 
-        <h1>{{item.filename}}</h1>
-        <h1>{{item.path}}</h1>
+        <h1>{{item.name}}</h1>
+        <h1>{{item.image}}</h1>
         <h1>{{item.id}}</h1>
       </div>
-      <button @click="Mut" ref="button">
+      <button @click="createCharacter" ref="button">
         Send message
       </button>
 
@@ -45,7 +45,14 @@
 
 
       </div>-->
-
+      <input
+          class="title bg-gray-100 border border-gray-300 p-2 mb-4 outline-none"
+          spellcheck="false"
+          placeholder="Title"
+          type="text"
+          ref="title"
+          v-model="product.name"
+      />
 
       <div class="form--container ">
         <div class="form--item flex flex-col">
@@ -58,6 +65,47 @@
       </div>
       <input v-model="file_name" placeholder="name">
     </div>
+
+
+  <div>
+    <h2 class="mb-4">Create Character</h2>
+    <form action="" @submit.prevent="createCharacter">
+      <div class="mb-4">
+        <input
+            v-model="name"
+            type="text"
+            class="shadow border rounded py-2 px-3 text-gray-700 leading-tight"
+            placeholder="name"
+        >
+      </div>
+      <div class="mb-4">
+        <input
+            v-model="status"
+            type="text"
+            class="shadow border rounded py-2 px-3 text-gray-700 leading-tight"
+            placeholder="status"
+        >
+      </div>
+      <div class="mb-4">
+        <input
+            v-model="gender"
+            type="text"
+            class="shadow border rounded py-2 px-3 text-gray-700 leading-tight"
+            placeholder="gender"
+        >
+      </div>
+      <div class="mb-4">
+        <input
+            v-model="image"
+            type="text"
+            class="shadow border rounded py-2 px-3 text-gray-700 leading-tight"
+            placeholder="image"
+        >
+      </div>
+      <button type="submit" class="bg-green-600 py-2 px-3 font-semibold text-white">Create Character</button>
+    </form>
+  </div>
+
 
 
 <!--  <img :alt="file_name" src="./assets/Flag_of_Germany.svg">-->
@@ -80,6 +128,7 @@ import  {useClient}  from '~/plugins/apollo-client'
 
 
 import mongoose from "mongoose"
+import {addCharacter} from "~/apollo/mutations/addCharacter";
 
 
 console.log(mongoose)
@@ -87,9 +136,17 @@ console.log(mongoose)
 
 
 /*import {MongoClient} from "mongodb";
-
+const title = ref()
 
 const client = new MongoClient(process.env.MONGODB_URI || "mongodb://localhost" )*/
+
+const formData = {
+
+  title: ""
+
+}
+
+
 
 
 
@@ -107,6 +164,13 @@ function addGraviola() {
   Uploads().imageCreate()
 
 }
+
+const name = ref('');
+const status = ref<string>('');
+const gender = ref('');
+const image = ref('');
+
+
 
 
 const url = ref()
@@ -128,16 +192,14 @@ const { mutate: handleAvatar, onDone } = useMutation(addImage, () => ({
 }))
 
 onDone(result => {
-  console.log(result.data.addPost)
-  let {  data , file  } = result.data.addPost;
+  console.log(result)
 
-  return {data, file}
 
 })
 
 const product = ref({
   id: "",
-  name: "test2",
+  name: "",
   price: 0,
   image: "url",
   files: []
@@ -152,8 +214,11 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-      file :  file,
-      data : product.value.name
+    book : {
+      id: 5,
+      title : product.value.name
+
+    }
     },
     );
   } catch (error) {
@@ -183,7 +248,22 @@ file = event.target.files[0];
 
 
 
+  const  { mutate : createCharacter } = useMutation(addCharacter, () => ({
 
+
+    variables: {
+      name : name.value,
+      status : status.value,
+      gender : gender.value,
+      image : image.value
+
+    },
+    refetchQueries: [
+
+      {query: uploads}
+
+    ]
+  }))
 
 let banner = ref()
 
