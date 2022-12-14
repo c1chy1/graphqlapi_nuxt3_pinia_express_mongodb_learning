@@ -10,6 +10,8 @@ export const resolvers = {
 
         allPhotos: () => Photo.find({}, (error, photos) => {
             if (error) console.log('error', error)
+
+            console.log(photos)
             return photos
         }),
 

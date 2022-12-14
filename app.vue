@@ -151,14 +151,17 @@ const formData = {
 
 
 
-const { result, error } = useQuery(uploads, {
+const { result, error } = useQuery(allPhotos, {
 
 });
 
-const collection = computed(() => result.value?.uploads?? [])
 
 
-console.log(collection)
+
+/*const collection = computed(() => result.value?.allPhotos?? [])*/
+
+
+console.log(result)
 function addGraviola() {
 
 
@@ -305,7 +308,6 @@ const previewBanner = (event: any) => {
 
 }
 
-console.log(collection)
 
 async function f() {
 
