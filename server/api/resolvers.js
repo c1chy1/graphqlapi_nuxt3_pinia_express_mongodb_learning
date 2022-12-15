@@ -24,13 +24,13 @@ export const resolvers = {
             return photos
         }),
 
-        allFiles: (parent, {file}, context) => {
-            // if (!context.loggedInUser) throw new ForbiddenError(error.auth.failed);
+    /*    allFiles: async (res) => await File.find({_id: res[0]._id.toHexString()}, (error, files) => {
 
-            console.log(file, context)
-
-            return File.find({});
-        },
+            console.log(files)
+            return files
+        }),
+*/
+        allFiles:() => files,
 
         characters: () => Character.find({}, (error, characters) => {
             if (error) console.log('error', error)
@@ -61,17 +61,16 @@ export const resolvers = {
 
           console.log(test)
 
-           file = await File.create({
+     /*      file = await File.create({
 
              filename: file.name,
              encoding : file.encoding,
                mimetype : file.mimetype
-          });
+          });*/
 
           console.log(file)
 
-          files.push(newFile)
-
+ files.push(file)
 
           console.log(files)
 

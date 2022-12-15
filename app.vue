@@ -156,12 +156,13 @@ const formData = {
 }
 
 let file_name = ref<string>('');
-console.log(file_name)
+
 
 
 const { result, error } = useQuery(allFiles, {
-file :  file_name
-});
+  filename : String
+
+})
 
 
 const collection = computed(() => result.value?.allFiles?? [])
