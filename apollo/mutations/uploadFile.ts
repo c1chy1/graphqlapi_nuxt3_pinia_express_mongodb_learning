@@ -9,6 +9,7 @@ export const uploadFile = gql`
          filename
          encoding
          mimetype
+         
      }
         
     }

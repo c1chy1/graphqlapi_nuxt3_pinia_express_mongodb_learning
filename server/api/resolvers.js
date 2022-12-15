@@ -24,10 +24,10 @@ export const resolvers = {
             return photos
         }),
 
-        allFiles: (parent, args, context) => {
+        allFiles: (parent, {file}, context) => {
             // if (!context.loggedInUser) throw new ForbiddenError(error.auth.failed);
 
-            console.log(args, context)
+            console.log(file, context)
 
             return File.find({});
         },
@@ -44,22 +44,38 @@ export const resolvers = {
     Mutation: {
 
 
-      uploadFile: async (parent, args, context) => {
+      uploadFile: async (parent, {file}, context) => {
 
-          const { userId } = context;
+
+
+          const { filename ,   encoding , mimetype   } = await file
+
+          const newFile = { filename ,encoding , mimetype  }
+
 
           // Check if story title already exists
-          if (await File.findOne({ filename: args.filename})) {
-              throw Error('Story already exists');
-          }
+   const test = File.findOne({
+       filename: file.name
+   })
 
-          const file = await File.create({
-              ...args,
-             filename: userId,
+
+          console.log(test)
+
+           file = await File.create({
+
+             filename: file.name,
+             encoding : file.encoding,
+               mimetype : file.mimetype
           });
-          pubsub.publish("file", file);
 
-          return file;
+          console.log(file)
+
+          files.push(newFile)
+
+
+          console.log(files)
+
+          return File.create(newFile)
       },
 
 

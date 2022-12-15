@@ -235,7 +235,11 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-file : file
+file : {
+  filename : file.name,
+ encoding : file.size,
+  mimetype : file.webkitRelativePath
+}
     },
     );
   } catch (error) {
