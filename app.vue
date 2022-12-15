@@ -106,7 +106,12 @@
     </form>
   </div>
 
-
+  <input
+      type="file"
+      ref="banner"
+      accept="image/*"
+      @change="previewBanner"
+  />
 
 <!--  <img :alt="file_name" src="./assets/Flag_of_Germany.svg">-->
 </template>
@@ -134,6 +139,7 @@ import {allPhotos} from "~/apollo/queries/allPhotos";
 import {Photo} from "~/server/api/models/Photo.model";
 import {uploadFile} from "~/apollo/mutations/uploadFile";
 import {allFiles} from "~/apollo/queries/allFiles";
+import {ensureBlock} from "@babel/types";
 
 
 
@@ -184,7 +190,6 @@ const url = ref()
 
 const files = ref([])
 let photo_url = ref('');
-
 let file_path = ref('');
 let file_id = ref('');
 
@@ -203,9 +208,12 @@ const { mutate: handleAvatar, onDone } = useMutation(uploadFile, () => ({
 
 
 onDone(result => {
-  console.log(result)
 
-
+  console.log(result.data.uploadFile)
+  let {  filename , photo } = result.data.uploadFile;
+  file_name.value = filename;
+  photo_url.value = photo;
+  console.log(filename)
 })
 
 const product = ref({
@@ -227,11 +235,7 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-file : {
-
-  filename : file.name
-
-}
+file : file
     },
     );
   } catch (error) {
@@ -296,16 +300,14 @@ let banner = ref()
 
 console.log(product.value.name)
 
-
+let file = null
 const previewBanner = (event: any) => {
-  const target = event.target as HTMLInputElement;
-  const file = (target.files as FileList)[0];
-   useClient().mutate({
-    mutation: addImage,
-    variables:   {
-      file: file
-    }})
 
+
+ file = event.target.files[0]
+
+
+  console.log(file)
 
 }
 

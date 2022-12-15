@@ -1,11 +1,16 @@
 import { GraphQLUpload } from 'apollo-upload-server';
+import { PubSub } from 'graphql-subscriptions';
 
 import {Character} from "~/server/api/models/Character.model";
 import {Photo} from "~/server/api/models/Photo.model";
 import {File} from "~/server/api/models/File.model";
+
+const pubsub = new PubSub();
+
 import fs from "fs"
 import path from "path"
 const photos = []
+const files = []
 
 export const resolvers = {
 
@@ -19,12 +24,14 @@ export const resolvers = {
             return photos
         }),
 
-        allFiles: () => File.find({}, (error, files) => {
-            if (error) console.log('error', error)
+        allFiles: (parent, args, context) => {
+            // if (!context.loggedInUser) throw new ForbiddenError(error.auth.failed);
 
-            console.log(files)
-            return files
-        }),
+            console.log(args, context)
+
+            return File.find({});
+        },
+
         characters: () => Character.find({}, (error, characters) => {
             if (error) console.log('error', error)
             return characters
@@ -37,16 +44,24 @@ export const resolvers = {
     Mutation: {
 
 
+      uploadFile: async (parent, args, context) => {
 
-        async uploadFile (_, { file }) {
-            const { filename, mimetype, encoding } = await file
+          const { userId } = context;
 
+          // Check if story title already exists
+          if (await File.findOne({ filename: args.filename})) {
+              throw Error('Story already exists');
+          }
 
-            console.log(filename,mimetype,encoding)
+          const file = await File.create({
+              ...args,
+             filename: userId,
+          });
+          pubsub.publish("file", file);
 
+          return file;
+      },
 
-            return { filename, mimetype, encoding }
-        },
 
 
 
@@ -75,14 +90,14 @@ export const resolvers = {
         },
 
 
- /*       addFile: async (parent, { data, file }, ctx) => {
-
-
-                const {createReadStream, filename, mimetype} = await file;
 
 
 
+}
 
-        }*/}}
+
+
+
+}
 
 

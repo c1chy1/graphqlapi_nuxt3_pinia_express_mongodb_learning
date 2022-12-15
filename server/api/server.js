@@ -2,7 +2,7 @@
 import express from 'express'
 import {ApolloServer } from "apollo-server-express";
 import { apolloUploadExpress } from 'apollo-upload-server';
-import typeDefs from './typeDefs'
+import {typeDefs} from './typeDefs'
 import {resolvers}  from "./resolvers";
 import cors from 'cors'
 import mongoose from 'mongoose';
@@ -30,7 +30,6 @@ server.start().then((res) => {
     server.applyMiddleware({
         app,
         cors: true,
-        uploads: false ,
         onHealthCheck: () =>
             new Promise((resolve, reject) => {
                 if (mongoose.connection.readyState > 0) {
