@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 
 const schema = new mongoose.Schema({
@@ -9,7 +9,8 @@ const schema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-})
+}
+)
 
 schema.virtual('id').get(function () {
   return this._id
@@ -19,5 +20,5 @@ schema.virtual('id').get(function () {
 const File = mongoose.model('File', schema, 'files')
 
 
-exports.File = File
+export {File}
 

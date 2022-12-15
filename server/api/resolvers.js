@@ -30,8 +30,9 @@ export const resolvers = {
             return files
         }),
 */
-        allFiles:() => files,
-
+        allFiles: async () => {
+            return await File.find()
+        },
         characters: () => Character.find({}, (error, characters) => {
             if (error) console.log('error', error)
             return characters
