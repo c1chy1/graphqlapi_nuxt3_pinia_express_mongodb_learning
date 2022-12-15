@@ -6,9 +6,8 @@
 
         <img class="w-16" :src="item">
 
-        <h1>{{item.name}}</h1>
-        <h1>{{item.image}}</h1>
-        <h1>{{item.id}}</h1>
+        <h1>{{item.filename}}</h1>
+
       </div>
       <button @click="createCharacter" ref="button">
         Send message
