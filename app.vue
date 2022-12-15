@@ -131,7 +131,9 @@ import mongoose from "mongoose"
 import {addCharacter} from "~/apollo/mutations/addCharacter";
 import {uploadPhoto} from "~/apollo/mutations/uploadPhoto";
 import {allPhotos} from "~/apollo/queries/allPhotos";
-
+import {Photo} from "~/server/api/models/Photo.model";
+import {uploadFile} from "~/apollo/mutations/uploadFile";
+import {allFiles} from "~/apollo/queries/allFiles";
 
 
 
@@ -147,16 +149,16 @@ const formData = {
 
 }
 
+let file_name = ref<string>('');
+console.log(file_name)
 
 
-
-
-const { result, error } = useQuery(allPhotos, {
-
+const { result, error } = useQuery(allFiles, {
+file :  file_name
 });
 
 
-
+const collection = computed(() => result.value?.allFiles?? [])
 
 /*const collection = computed(() => result.value?.allPhotos?? [])*/
 
@@ -182,7 +184,7 @@ const url = ref()
 
 const files = ref([])
 let photo_url = ref('');
-let file_name = ref<string>('');
+
 let file_path = ref('');
 let file_id = ref('');
 
@@ -190,11 +192,11 @@ let file_id = ref('');
 
 
 
-const { mutate: handleAvatar, onDone } = useMutation(uploadPhoto, () => ({
+const { mutate: handleAvatar, onDone } = useMutation(uploadFile, () => ({
 
   refetchQueries: [
 
-    {query: allPhotos}
+    {query: allFiles}
 
   ]
 }))
@@ -225,12 +227,11 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
- photo: {
+file : {
 
-   filename : file.name,
-   path: file.size
+  filename : file.name
 
- }
+}
     },
     );
   } catch (error) {
@@ -243,7 +244,7 @@ const handleImage = async (event: Event) => {
 /*withDefaults(defineProps<{
   size?: number
   labels?: string[]
-  files? : typeof collection
+  allFiles? : typeof collection
 
 }>(), {
   size: 3,
@@ -252,8 +253,8 @@ const handleImage = async (event: Event) => {
 })*/
 
 
-/*function previewBanner(event: { target: { files: any[]; }; }) {
-file = event.target.files[0];
+/*function previewBanner(event: { target: { allFiles: any[]; }; }) {
+file = event.target.allFiles[0];
 
   console.log(file)
 }*/

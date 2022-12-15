@@ -27,13 +27,15 @@ const typeDefs = gql`
     
     
     type Query {
+        
+        allFiles :[File]
         allPhotos: [Photo]
         characters: [Character]
         character(id: ID!): Character
     }
 
     type Mutation {
-        
+        uploadFile(file: Upload!): File!
         addCharacter(name: String!, status: String!, gender: String, image: String): Character
         uploadPhoto(photo: Upload!): Photo!
     }

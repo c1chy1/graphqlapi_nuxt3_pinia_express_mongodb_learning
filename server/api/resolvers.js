@@ -1,11 +1,15 @@
-
+import { GraphQLUpload } from 'apollo-upload-server';
 
 import {Character} from "~/server/api/models/Character.model";
 import {Photo} from "~/server/api/models/Photo.model";
-
+import {File} from "~/server/api/models/File.model";
+import fs from "fs"
+import path from "path"
 const photos = []
 
 export const resolvers = {
+
+    Upload: GraphQLUpload,
     Query: {
 
         allPhotos: () => Photo.find({}, (error, photos) => {
@@ -15,6 +19,12 @@ export const resolvers = {
             return photos
         }),
 
+        allFiles: () => File.find({}, (error, files) => {
+            if (error) console.log('error', error)
+
+            console.log(files)
+            return files
+        }),
         characters: () => Character.find({}, (error, characters) => {
             if (error) console.log('error', error)
             return characters
@@ -25,6 +35,19 @@ export const resolvers = {
         })
     },
     Mutation: {
+
+
+
+        async uploadFile (_, { file }) {
+            const { filename, mimetype, encoding } = await file
+
+
+            console.log(filename,mimetype,encoding)
+
+
+            return { filename, mimetype, encoding }
+        },
+
 
 
         async uploadPhoto (parent, { photo }) {

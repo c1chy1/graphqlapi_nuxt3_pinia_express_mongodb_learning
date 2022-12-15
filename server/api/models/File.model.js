@@ -12,4 +12,6 @@ FileSchema.virtual('id').get(function () {
   return this._id
 })
 
-module.exports = mongoose.model('File', FileSchema)
+
+const File = mongoose.model('File', FileSchema, 'files')
+module.exports = File
