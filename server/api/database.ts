@@ -6,9 +6,8 @@ dotenv.config();
 export const startConnection = async () => {
     try {
         console.log();
-        //recuerda configurar la base de datos en .env
         const db = await mongoose.connect(`mongodb+srv://test:${process.env.PASS}@cluster0.b2vl73t.mongodb.net/?authMechanism=DEFAULT`);
-        mongoose.plugin((schema: any) => { schema.options.usePushEach = true; });
+        mongoose.plugin((schema: any) => { schema.options.usePushEach = true; schema.options.useUnifiedTopology = true;  schema.options.useNewUrlParser = true;  });
 
 
 
@@ -16,7 +15,7 @@ export const startConnection = async () => {
             console.log('MongoDB is connected');
         }
     } catch (error) {
-        console.log('NO se pudo establecer conexion con MongoDB, por favor crear un archivo .env en la carpeta raiz, y agregarle el password');
+        console.log('error MongoDB is not connected');
         // console.log(error);
     }
 

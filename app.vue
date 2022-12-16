@@ -4,7 +4,7 @@
 
       <div v-for="item in collection"   >
 
-        <img class="w-16" :src="item">
+        <img class="w-16" :src="`_nuxt/assets/${item.filename}`">
 
         <h1>{{item.filename}}</h1>
 
@@ -56,7 +56,7 @@
       <div class="form--container ">
         <div class="form--item flex flex-col">
           <label class="form--label" for="file">Select File: </label>
-          <input class="form--input" type="file" name="file" id="file" @change="handleImage"  required />
+          <input class="form--input" type="file"  name="file" id="file" @change="handleImage"  required />
         </div>
         <div v-if="file_name" class="form--item">
           <img :alt="file_name" :src="photo_url" class="w-16">
@@ -138,7 +138,6 @@ import {allPhotos} from "~/apollo/queries/allPhotos";
 import {Photo} from "~/server/api/models/Photo.model";
 import {uploadFile} from "~/apollo/mutations/uploadFile";
 import {allFiles} from "~/apollo/queries/allFiles";
-import {ensureBlock} from "@babel/types";
 
 
 
@@ -235,11 +234,7 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-file : {
-  filename : file.name,
- encoding : file.size,
-  mimetype : file.webkitRelativePath
-}
+file : file
     },
     );
   } catch (error) {

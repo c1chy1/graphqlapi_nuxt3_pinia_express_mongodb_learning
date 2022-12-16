@@ -1,11 +1,12 @@
-import mongoose from 'mongoose'
+const mongoose = require('mongoose')
 
 
 const schema = new mongoose.Schema({
   filename: String,
   mimetype: String,
   encoding: String,
-  photo: {
+
+  photoUrl: {
     type: String,
     trim: true,
   },
@@ -19,6 +20,6 @@ schema.virtual('id').get(function () {
 
 const File = mongoose.model('File', schema, 'files')
 
+module.exports = File
 
-export {File}
 

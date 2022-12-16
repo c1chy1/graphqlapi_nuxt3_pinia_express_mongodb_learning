@@ -21,7 +21,8 @@ export const typeDefs = gql`
     
     
     type File {
-        photo: String!
+        id: ID!
+        photoUrl: String!
         filename: String!
         mimetype: String!
         encoding: String!
@@ -30,14 +31,14 @@ export const typeDefs = gql`
     
     type Query {
         
-        allFiles :[File]
+        allFiles :[File!]
         allPhotos: [Photo]
         characters: [Character]
         character(id: ID!): Character
     }
 
     type Mutation {
-        uploadFile(file: Upload!): File!
+        uploadFile(file: Upload!): File
         addCharacter(name: String!, status: String!, gender: String, image: String): Character
         uploadPhoto(photo: Upload!): Photo!
     }

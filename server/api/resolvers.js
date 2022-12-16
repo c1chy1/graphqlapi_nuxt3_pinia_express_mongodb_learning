@@ -1,16 +1,44 @@
-import { GraphQLUpload } from 'apollo-upload-server';
-import { PubSub } from 'graphql-subscriptions';
+import { GraphQLUpload  } from 'apollo-upload-server';
 
+import shortid from "shortid"
+import {FileUpload} from "graphql-upload"
+import { PubSub } from 'graphql-subscriptions';
+import {createWriteStream, mkdir } from "fs"
+import mongoose from "mongoose";
 import {Character} from "~/server/api/models/Character.model";
 import {Photo} from "~/server/api/models/Photo.model";
-import {File} from "~/server/api/models/File.model";
-
+import File from "~/server/api/models/File.model";
+import {startConnection} from './database';
 const pubsub = new PubSub();
 
 import fs from "fs"
 import path from "path"
 const photos = []
 const files = []
+
+
+const storeUpload = async ({ stream, filename, mimetype }) => {
+    const id = shortid.generate();
+
+    //location where image is sored
+    const path = `images/${id}-${filename}`;
+
+    // (createWriteStream) writes our file to the images directory
+    return new Promise((resolve, reject) =>
+        stream
+            .pipe(createWriteStream(path))
+            .on("finish", () => resolve({ id, path, filename, mimetype }))
+            .on("error", reject)
+    );
+};
+
+const processUpload = async (upload) => {
+    const { createReadStream, filename, mimetype } = await upload;
+    const stream = createReadStream();
+    const file = await storeUpload({ stream, filename, mimetype });
+    return file;
+};
+
 
 export const resolvers = {
 
@@ -45,38 +73,64 @@ export const resolvers = {
     Mutation: {
 
 
-      uploadFile: async (parent, {file}, context) => {
+
+
+        uploadFile: async (_, { file }) => {
+            //GRIDFS
+            const data = await startConnection()
+            const { stream, filename, mimetype, encoding } = await file;
+            const gridFsBucket = new mongoose.mongo.GridFSBucket(data);
+            const uploadStream = gridFsBucket.openUploadStream(filename);
+            await new Promise((resolve, reject) => {
+                stream
+                    .pipe(uploadStream)
+                    .on("error", reject)
+                    .on("finish", resolve);
+            });
+            return { id: uploadStream.id, filename, mimetype, encoding } },
+
+/*        uploadFile: async(parent, args, context, info) => {
+            const file = new File(args.file)
+
+
+            console.log(file)
+
+            await file.save()
+            return file
+        },*/
+
+/*      uploadFile: async (parent, {file}, context) => {
 
 
 
-          const { filename ,   encoding , mimetype   } = await file
+          const { stream, filename ,   encoding , mimetype , photoURL} = await file
 
-          const newFile = { filename ,encoding , mimetype  }
+          const newFile = {
+              stream,
+              filename,
+              encoding,
+              mimetype,
+              photoURL : Buffer.from(photoURL).toString('base64') }
 
 
-          // Check if story title already exists
-   const test = File.findOne({
-       filename: file.name
-   })
+          console.log(newFile.photoURL)
+
+/!*          const data = fs.createReadStream(path.join("../uploads", filename));
 
 
-          console.log(test)
+          const storedFileUrl = path.join("uploads", filename)
 
-     /*      file = await File.create({
 
-             filename: file.name,
-             encoding : file.encoding,
-               mimetype : file.mimetype
-          });*/
+          fs.createWriteStream(storedFileUrl)*!/
 
-          console.log(file)
+
 
  files.push(file)
 
-          console.log(files)
 
-          return File.create(newFile)
-      },
+
+          return  File.create(newFile)
+      },*/
 
 
 
