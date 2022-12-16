@@ -7,6 +7,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+
   "devDependencies": {
     "@apollo/client": "^3.7.1",
     "@nuxtjs/tailwindcss": "^5.3.2",
@@ -30,6 +31,7 @@
     "graphql-playground-middleware-express": "^1.7.23",
     "graphql-tag": "^2.12.6",
     "graphql-upload": "^16.0.2",
+    "apollo-server-errors": "^3.3.1",
     "mongoose": "^6.8.0",
     "pinia": "^2.0.23",
     "shortid": "^2.2.16",

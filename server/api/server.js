@@ -7,6 +7,8 @@ import {resolvers}  from "./resolvers";
 import cors from 'cors'
 import mongoose from 'mongoose';
 import {startConnection} from './database';
+import { ApolloError } from 'apollo-server-errors';
+
 
 startConnection()
 
@@ -14,7 +16,7 @@ startConnection()
 const app = express();
 app.use(cors())
 app.use(apolloUploadExpress({ uploadDir: './uploads' }));
-app.use('/uploads', express.static('/uploads'));
+app.use(express.static('./uploads'));
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -22,7 +24,41 @@ app.use((req, res, next) => {
     next();
 })
 
-const server = new ApolloServer({  typeDefs , resolvers});
+const server = new ApolloServer({  typeDefs , resolvers,
+
+    formatError: (formattedError, error) => {
+
+        // Return a different error message
+
+        if (
+
+            formattedError.extensions.code ===
+
+            ApolloError.GRAPHQL_VALIDATION_FAILED
+
+        ) {
+
+            return {
+
+                ...formattedError,
+
+                message: "Your query doesn't match the schema. Try double-checking it!",
+
+            };
+
+        }
+
+
+        // Otherwise return the formatted error. This error can also
+
+        // be manipulated in other ways, as long as it's returned.
+
+        return formattedError;
+
+    },
+
+});
+
 
 
 server.start().then((res) => {

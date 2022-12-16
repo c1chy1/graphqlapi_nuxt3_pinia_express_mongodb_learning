@@ -3,7 +3,7 @@ import { GraphQLUpload  } from 'apollo-upload-server';
 import shortid from "shortid"
 import {FileUpload} from "graphql-upload"
 import { PubSub } from 'graphql-subscriptions';
-import {createWriteStream, mkdir } from "fs"
+import {createWriteStream, mkdir , createReadStream} from "fs"
 import mongoose from "mongoose";
 import {Character} from "~/server/api/models/Character.model";
 import {Photo} from "~/server/api/models/Photo.model";
@@ -12,7 +12,7 @@ import {startConnection} from './database';
 const pubsub = new PubSub();
 
 import fs from "fs"
-import path from "path"
+
 const photos = []
 const files = []
 
@@ -33,8 +33,8 @@ const storeUpload = async ({ stream, filename, mimetype }) => {
 };
 
 const processUpload = async (upload) => {
-    const { createReadStream, filename, mimetype } = await upload;
-    const stream = createReadStream();
+    let { createReadStream, filename, mimetype } = await upload;
+    let stream = fs.createReadStream();
     const file = await storeUpload({ stream, filename, mimetype });
     return file;
 };
@@ -73,6 +73,28 @@ export const resolvers = {
     Mutation: {
 
 
+/*        uploadFile: async (_, { file }) => {
+
+
+
+          mkdir("images", { recursive: true }, (err) => {
+      if (err) throw err;
+          });
+
+
+
+  const upload = await processUpload(file);
+
+
+     await File.create(upload)
+
+
+
+             return upload;
+
+
+        },*/
+
 
 
         uploadFile: async (_, { file }) => {
@@ -81,6 +103,9 @@ export const resolvers = {
             const { stream, filename, mimetype, encoding } = await file;
             const gridFsBucket = new mongoose.mongo.GridFSBucket(data);
             const uploadStream = gridFsBucket.openUploadStream(filename);
+
+            console.log(gridFsBucket)
+
             await new Promise((resolve, reject) => {
                 stream
                     .pipe(uploadStream)

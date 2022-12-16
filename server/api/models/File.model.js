@@ -6,10 +6,7 @@ const schema = new mongoose.Schema({
   mimetype: String,
   encoding: String,
 
-  photoUrl: {
-    type: String,
-    trim: true,
-  },
+  path:String
 }
 )
 

@@ -158,7 +158,7 @@ let file_name = ref<string>('');
 
 
 const { result, error } = useQuery(allFiles, {
-  filename : String
+
 
 })
 

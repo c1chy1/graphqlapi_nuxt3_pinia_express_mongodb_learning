@@ -5,12 +5,7 @@ export const uploadFile = gql`
 
     mutation ($file: Upload!) {
         
-     uploadFile(file: $file) {
-         filename
-         encoding
-         mimetype
-         
-     }
+     uploadFile(file: $file) 
         
     }
 `

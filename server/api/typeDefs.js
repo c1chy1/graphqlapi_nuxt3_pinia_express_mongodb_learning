@@ -22,7 +22,7 @@ export const typeDefs = gql`
     
     type File {
         id: ID!
-        photoUrl: String!
+        path: String!
         filename: String!
         mimetype: String!
         encoding: String!
@@ -38,7 +38,7 @@ export const typeDefs = gql`
     }
 
     type Mutation {
-        uploadFile(file: Upload!): File
+        uploadFile(file: Upload!): String
         addCharacter(name: String!, status: String!, gender: String, image: String): Character
         uploadPhoto(photo: Upload!): Photo!
     }
