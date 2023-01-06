@@ -11,12 +11,14 @@ import File from "~/server/api/models/File.model";
 import {startConnection} from './database';
 const pubsub = new PubSub();
 
+import path from "path"
 import fs from "fs"
 
 const photos = []
 const files = []
 
 
+/*
 const storeUpload = async ({ stream, filename, mimetype }) => {
     const id = shortid.generate();
 
@@ -39,6 +41,7 @@ const processUpload = async (upload) => {
     return file;
 };
 
+*/
 
 export const resolvers = {
 
@@ -97,7 +100,7 @@ export const resolvers = {
 
 
 
-        uploadFile: async (_, { file }) => {
+     /*   uploadFile: async (_, { file }) => {
             //GRIDFS
             const data = await startConnection()
             const { stream, filename, mimetype, encoding } = await file;
@@ -112,7 +115,7 @@ export const resolvers = {
                     .on("error", reject)
                     .on("finish", resolve);
             });
-            return { id: uploadStream.id, filename, mimetype, encoding } },
+            return { id: uploadStream.id, filename, mimetype, encoding } },*/
 
 /*        uploadFile: async(parent, args, context, info) => {
             const file = new File(args.file)
@@ -124,38 +127,39 @@ export const resolvers = {
             return file
         },*/
 
-/*      uploadFile: async (parent, {file}, context) => {
+      uploadFile: async (parent, {file}, context) => {
 
 
 
-          const { stream, filename ,   encoding , mimetype , photoURL} = await file
+          let { stream, filename ,   encoding , mimetype } = await file
+          stream = fs.createReadStream(path.join("../uploads", filename));
+
+
+          const storedFileUrl = path.join("uploads", filename)
+
+
+          fs.createWriteStream(storedFileUrl)
 
           const newFile = {
               stream,
               filename,
               encoding,
               mimetype,
-              photoURL : Buffer.from(photoURL).toString('base64') }
+              path }
 
 
-          console.log(newFile.photoURL)
-
-/!*          const data = fs.createReadStream(path.join("../uploads", filename));
-
-
-          const storedFileUrl = path.join("uploads", filename)
-
-
-          fs.createWriteStream(storedFileUrl)*!/
+          console.log(path)
 
 
 
- files.push(file)
+
+
+ files.push(newFile)
 
 
 
           return  File.create(newFile)
-      },*/
+      },
 
 
 

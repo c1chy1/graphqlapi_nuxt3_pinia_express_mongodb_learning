@@ -5,8 +5,6 @@ const schema = new mongoose.Schema({
   filename: String,
   mimetype: String,
   encoding: String,
-
-  path:String
 }
 )
 

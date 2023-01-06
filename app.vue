@@ -158,7 +158,7 @@ let file_name = ref<string>('');
 
 
 const { result, error } = useQuery(allFiles, {
-
+  filename : String
 
 })
 
@@ -209,9 +209,10 @@ const { mutate: handleAvatar, onDone } = useMutation(uploadFile, () => ({
 onDone(result => {
 
   console.log(result.data.uploadFile)
-  let {  filename , photo } = result.data.uploadFile;
+  let {  filename ,   encoding , mimetype  } = result.data.uploadFile;
   file_name.value = filename;
-  photo_url.value = photo;
+  photo_url.value = encoding;
+  photo_url.value =  mimetype;
   console.log(filename)
 })
 
@@ -234,7 +235,13 @@ const handleImage = async (event: Event) => {
     console.log(file);
     console.log(files);
     handleAvatar({
-file : file
+file : {
+
+  filename: file.name,
+  encoding: file.size,
+  mimetype: file.type
+
+}
     },
     );
   } catch (error) {
